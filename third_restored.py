@@ -1,11 +1,11 @@
-#! /usr/bin/env python3.9
+#! /usr/bin/env python3
 
 import argparse
 import csv
 from pathlib import Path
 from typing import List
 
-import numpy as np
+import math
 
 parser = argparse.ArgumentParser()
 parser.add_argument("input_dir", type=Path, help="where data comes from")
@@ -72,10 +72,15 @@ def get_line_number(line):
         return None
 
 
-def octave_band(third_octave_values: List[str]) -> np.ndarray:
+def octave_band(third_octave_values):
+    def dB_add(a):
+        return 10 * math.log10(10**(float(third_octave_values[a + 0]) / 10) +
+                             10**(float(third_octave_values[a + 1]) / 10) +
+                             10**(float(third_octave_values[a + 2]) / 10))
+
     assert len(third_octave_values) % 3 == 0
-    values = np.array(third_octave_values).astype(float).reshape(-1, 3)
-    return 10 * np.log10(np.sum(10 ** (values / 10), axis=-1))
+    return [dB_add(n) for n in range(0, len(third_octave_values), 3)]
+
 
 
 filename = next(INPUT_DIR.iterdir())
@@ -98,8 +103,11 @@ with OUTPUT_THIRD.open("w", newline="") as third_csv, OUTPUT_OCTAVE.open(
     third_writer = csv.writer(third_csv)
     octave_writer = csv.writer(octave_csv)
 
-    head, *_ = array = np.array(third_octave_band).reshape(-1, 3)
-    octave_header = [*head, *array[1:, 1]]
+    octave_header = third_octave_band[:3]
+    octave_header += [
+        third_octave_band[i] for i in range(4, len(third_octave_band), 3)
+    ]
+
 
     for third_octave_line, category, dBA_line in line_info:
         print("Generating data for", category)
