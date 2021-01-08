@@ -8,8 +8,8 @@ from typing import List
 import math
 
 parser = argparse.ArgumentParser()
-parser.add_argument("input_dir", type=Path, help="where data comes from")
-parser.add_argument("output_dir", type=Path, help="where new files go")
+parser.add_argument("--input_dir", type=Path, help="where data comes from", default=Path("~/Documents/soundlevelmeterdump").expanduser())
+parser.add_argument("--output_dir", type=Path, help="where new files go", default=Path("~/Documents/soundleveldata").expanduser())
 parser.add_argument("--no-wait", dest="wait", action="store_false")
 parser.add_argument("--project")
 args = parser.parse_args()
