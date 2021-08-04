@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--input_dir", type=Path, help="where data comes from", default=Path("~/Documents/soundlevelmeterdump").expanduser())
 parser.add_argument("--output_dir", type=Path, help="where new files go", default=Path("~/Documents/soundleveldata").expanduser())
 parser.add_argument("--no-wait", dest="wait", action="store_false")
-parser.add_argument("--project")
+parser.add_argument("--project", help="Name of project. Looks for input at input_dir/project and puts output in output_dir/project.")
 args = parser.parse_args()
 
 PROJECT_NAME = args.project
